@@ -1,6 +1,6 @@
 import Foundation
 
-enum tryLetterResult {
+public enum tryLetterResult {
     case invalidSecret
     case invalidWord
     case alreadyTried
@@ -10,24 +10,24 @@ enum tryLetterResult {
     case notFound
 }
 
-enum loadGameResult {
+public enum loadGameResult {
     case invalidJson
     case won
     case lost
     case ok
 }
 
-struct HangmanGame {
+public struct HangmanGame {
     let characterSet = "abcdefghijklmnopqrstuvwxyz"
     let defaultMaxFailure = 7
     let secretCharacter = "_"
     
-    var maxFail: Int
-    var secret: String = ""
-    var lettersTried: String
-    var failedAttempts: Int
-    var singleWord: Bool
-    var discovered: String { //like secret but with secretCharacter ('-') to replace undiscovered characters
+    public var maxFail: Int
+    public var secret: String = ""
+    public var lettersTried: String
+    public var failedAttempts: Int
+    public var singleWord: Bool
+    public var discovered: String { //like secret but with secretCharacter ('-') to replace undiscovered characters
         get {
             var discovered = ""
             
@@ -45,7 +45,7 @@ struct HangmanGame {
     }
     
     
-    init(singleWord:Bool = true) {
+    public init(singleWord:Bool = true) {
         self.maxFail = defaultMaxFailure
         self.singleWord = singleWord
         self.lettersTried = ""
@@ -53,12 +53,12 @@ struct HangmanGame {
         self.secret = getSecret(singleWord)
     }
     
-    init(singleWord:Bool = true, maxFail: Int) {
+    public init(singleWord:Bool = true, maxFail: Int) {
         self.init(singleWord: singleWord)
         self.maxFail = maxFail
     }
     
-    init(secret: String) {
+    public init(secret: String) {
         self.maxFail = defaultMaxFailure
         self.singleWord = true
         self.lettersTried = ""
@@ -71,14 +71,14 @@ struct HangmanGame {
         }
     }
     
-    init(secret: String, maxFail: Int) {
+    public init(secret: String, maxFail: Int) {
         self.init(secret: secret)
         self.maxFail = maxFail
     }
     
     
     
-    mutating func tryLetter(_ letter: String) -> tryLetterResult {
+    public mutating func tryLetter(_ letter: String) -> tryLetterResult {
         guard secret.lengthOfBytes(using: .ascii) > 0 else { return .invalidSecret }
         guard failedAttempts < maxFail else { return .lost }
         
@@ -110,7 +110,7 @@ struct HangmanGame {
         return .notFound
     }
     
-    func save() throws -> String? {
+    public func save() throws -> String? {
         let gameDictionary:[String : Any] = ["maxFail" : maxFail, "secret" : secret, "lettersTried" : lettersTried, "failedAttempts" : failedAttempts]
         
         let jsonData = try JSONSerialization.data(withJSONObject: gameDictionary, options: .prettyPrinted)
@@ -118,7 +118,7 @@ struct HangmanGame {
         return jsonString
     }
     
-    mutating func load(_ json: String) throws -> loadGameResult {
+    public mutating func load(_ json: String) throws -> loadGameResult {
         if let jsonData = json.data(using: .ascii) {
             let jsonDictionary = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [String : Any]
             
